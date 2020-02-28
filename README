@@ -1,0 +1,126 @@
+Vlad Andrei-Alexandru
+311 CB
+
+						=== TURNURILE DIN HANOI ===
+
+	Scopul acestei teme este inserarea discurilor, in ordine descrescatoare
+a diametrelor acestora, pe stivele numite turnuri din fiecare sistem hanoi
+de culoare diferita.
+
+Note: Am folosit sublime text 3 si Tab Size: 2
+			Am considerat ca asa arata codul mai usor de citit si fara spatii prea mari
+
+=== tema2.c ===
+	Pentru a implementa aceste obiective a fost nevoie de prelucrarea fisierelor
+date ca argumente in linia de comanda. Main-ul citeste operatiile din primul
+fisier, le delimiteaza cu ajutorul instructiunilor "if" si le executa. La final
+se elibereaza toata memoria alocata pe parcursul executiei programului si se
+inchid fisierele date ca parametru.
+	Pentru a face codul mai usor de verificat am distribuit functiile in fisiere
+diferite: Stiva.c Coada.c Operatii.c si aux.c. Declararile functiilor din aceste
+fisiere sunt prezente in fisierul header.h.
+
+=== Stiva.c ===
+	Acest fisier contine functii specifice stivei: initialiare, distrugere, adaugare
+si extragere din stiva.
+	Stivele sunt folosite pentru a tine evidenta discurilor din fiecare sistem Hanoi.
+	Acestea au fost implementate folosind liste generice simplu inlantuite.
+	Inserarea discurilor in ordine descrescatoare de la baza la varf este facuta 
+	cu ajutorul functiilor Push si Pop. Nu se foloseste iterarea prin lista inlantuita
+
+=== Coada.c ===
+	La fel ca si la Stiva.c, acest fisier contine functiile de initializare,
+distrugere, adaugare si extragere. Cozile sunt folosite pentru a stoca
+informatiile despre ordinea mutarilor in sistem pentru a putea fi rezolvat.
+De asemenea, contine si numarul de mutari necesare pentru ca jocul sa fie
+complet.
+	In acest fisier este si functia de resetare a mutarilor. Aceasta functie
+este utila atunci cand se adauga un disc nou intr-un sistem, iar evolutia 
+acestui joc se va schimba. ResetMutari se bazeaza pe functia de Distrugere
+Coada.
+	
+=== Operatii.c ===
+	Acest fisier contine functiile pentru operatiile citite din fisierul de 
+input.
+	Functia ADD cauta in lista de sisteme hanoi culoarea citita si introduce discul
+ordonat pe stiva. In cazul in care nu exista un sistem de acea culoare, acesta va
+fi creeat. Dupa inserarea acestora se reseteaza mutarile si se regenereaza
+in coada specifica de mutari.
+	
+	Functia SHOW scrie in fisier stivele (A_cul: ; B_cul: ; C_cul:) si apeleaza
+o functie auxiliara care stie sa afiseze discurile de pe fiecare stiva (A, B, C)
+	Nu se itereaza prin stiva, ci se folosesc functiile specifice stivei (Push, Pop).
+
+	Functia SHOW_MOVES afiseaza n mutari din coada de mutari specifice sistemului
+Hanoi de culoarea specificata.
+	Aici..functia da segfault dupa ce se executa de cateva ori. Problema cred ca este
+pe la liniile 205->211 in Operatii.c. Am fost nevoit sa comentez aceasta functie
+pentru ca checkerul sa nu mai afiseze segfaulturile si sa ruleze mai rapid.
+
+=== aux.c ===
+	Acest fisier contine toate operatiile auxiliare precum initializarea celulelor 
+pentru lista simplu inlantuita, distrugerea tuturor celulelor alocate + string-uri,
+functia toh care simuleaza mutarile a n discuri din fiecare sistem Hanoi, functia 
+de initializare sistem Hanoi (creeaza 3 stive A, B, C si denumeste sistemul cu 
+culoarea specifica). Mai este si functia de inserare mutari care insereaza outputul
+functiei toh in cozi pentru a tine evidenta tuturor mutarilor.
+
+=== header.h ===
+	Acest fisier contine toate typedef-urile folosite (celula, stiva, coada, mutare
+si sistemHanoi). Pe langa acestea sunt definite si functiile din cele 4 fisiere 
+sursa.
+
+=== PUNCTAJ ===
+	Pe masina locala primesc 32 de puncte fara valgrind.
+
+=== VALGRIND ===
+	Am verificat toate alocarile facute si le-am eliberat. Am initializat tot ce
+se putea cu NULL dupa ce nu am mai folosit variabilele, dar tot nu primesc
+bonusul de valgrind.
+	Am rulat comanda 
+---
+>valgrind --leak-check=full --show-leak-kinds=all ./tema2 ./in/test9.in ./out.txt
+---
+	pe fiecare test si tot ce aloca se si elibereaza. 
+	("All heap blocks were freed -- no leaks are possible")
+	Problema este ca imi afiseaza 
+
+==4550== Memcheck, a memory error detector
+==4550== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==4550== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==4550== Command: ./tema2 ./in/test9.in ./out.txt
+==4550== 
+==4550== Conditional jump or move depends on uninitialised value(s)
+==4550==    at 0x4C31FBC: strcmp (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4550==    by 0x40119E: add (in /home/alex/Dropbox/SD/tema2/tema2)
+==4550==    by 0x400A78: main (in /home/alex/Dropbox/SD/tema2/tema2)
+==4550== 
+==4550== Conditional jump or move depends on uninitialised value(s)
+==4550==    at 0x4C31FAA: strcmp (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4550==    by 0x40119E: add (in /home/alex/Dropbox/SD/tema2/tema2)
+==4550==    by 0x400A78: main (in /home/alex/Dropbox/SD/tema2/tema2)
+==4550== 
+==4550== Conditional jump or move depends on uninitialised value(s)
+==4550==    at 0x4C31FBC: strcmp (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4550==    by 0x40158C: show (in /home/alex/Dropbox/SD/tema2/tema2)
+==4550==    by 0x400B38: main (in /home/alex/Dropbox/SD/tema2/tema2)
+==4550== 
+==4550== Conditional jump or move depends on uninitialised value(s)
+==4550==    at 0x4C31FAA: strcmp (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4550==    by 0x40158C: show (in /home/alex/Dropbox/SD/tema2/tema2)
+==4550==    by 0x400B38: main (in /home/alex/Dropbox/SD/tema2/tema2)
+==4550== 
+==4550== 
+==4550== HEAP SUMMARY:
+==4550==     in use at exit: 0 bytes in 0 blocks
+==4550==   total heap usage: 779,833 allocs, 779,833 frees, 7,048,646 bytes allocated
+==4550== 
+==4550== All heap blocks were freed -- no leaks are possible
+==4550== 
+==4550== For counts of detected and suppressed errors, rerun with: -v
+==4550== Use --track-origins=yes to see where uninitialised values come from
+==4550== ERROR SUMMARY: 488 errors from 4 contexts (suppressed: 0 from 0)
+
+	Pentru a citi din fisier cu "fscanf" am declarat vectori de char de 64.
+	I-am initializat cu char color[64] = {0} , dar nu schimba nimic.
+
