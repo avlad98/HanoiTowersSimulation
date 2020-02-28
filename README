@@ -7,9 +7,6 @@ Vlad Andrei-Alexandru
 a diametrelor acestora, pe stivele numite turnuri din fiecare sistem hanoi
 de culoare diferita.
 
-Note: Am folosit sublime text 3 si Tab Size: 2
-			Am considerat ca asa arata codul mai usor de citit si fara spatii prea mari
-
 === tema2.c ===
 	Pentru a implementa aceste obiective a fost nevoie de prelucrarea fisierelor
 date ca argumente in linia de comanda. Main-ul citeste operatiile din primul
